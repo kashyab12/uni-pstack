@@ -57,6 +57,7 @@ This repo installs the universal `pstack` skill plus upstream-derived subskills 
 - [playbooks.md](references/playbooks.md): routing table and execution steps.
 - [delegation.md](references/delegation.md): Codex subagents, Claude-to-Codex CLI, long waits, arena patterns.
 - [codex-cli.md](references/codex-cli.md): direct Codex CLI cookbook with clinical examples.
+- [automations.md](references/automations.md): convert Cursor automation packs such as Benny into Codex or Claude Code runners.
 - [writing.md](references/writing.md): concise reply and prose cleanup rules.
 - [install.md](references/install.md): installing this same skill for Codex and Claude Code.
 - [scripts/spawn-codex-worker.sh](scripts/spawn-codex-worker.sh): portable Codex CLI worker launcher.

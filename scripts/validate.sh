@@ -32,6 +32,7 @@ echo "== required upstream package material =="
 test -f "$repo_dir/automations/benny/FOR_AGENTS.md"
 test -f "$repo_dir/agents/poteto-agent.md"
 test -f "$repo_dir/pstack/agents/poteto-agent.md"
+test -f "$repo_dir/pstack/references/automations.md"
 test -f "$repo_dir/.cursor-plugin/plugin.json"
 
 echo "== stale model/frontmatter scan =="

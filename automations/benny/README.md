@@ -2,7 +2,11 @@
 
 benny gives you two cursor automations for slack issue reports. one triages each report. the other reproduces confirmed bugs and may prepare a small draft fix.
 
-the files in this directory are dormant setup and automation sources. they do not appear as slash skills.
+the files in this directory are setup and automation sources. they do not appear as slash skills.
+
+## codex and claude code
+
+this pack can be converted to codex or claude code. do not install these files unchanged as normal skills. translate the trigger, waits, integration writes, and editor handoff into a host runner. the portable mapping lives at [`../../pstack/references/automations.md`](../../pstack/references/automations.md).
 
 ## set it up
 

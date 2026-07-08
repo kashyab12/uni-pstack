@@ -7,8 +7,9 @@ This ports the Cursor pstack workflow into a portable skill suite:
 - `pstack/SKILL.md` is the entry point.
 - `skills/` contains the upstream pstack subskills, including `architect`, `arena`, `how`, `why`, `interrogate`, `reflect`, `tdd`, `typescript-best-practices`, `unslop`, and the principle skills.
 - `agents/poteto-agent.md` keeps the upstream agent shape as a portable reference. The installed `pstack/agents/poteto-agent.md` copy travels with the `pstack` skill.
-- `automations/benny/` preserves the upstream Benny automation pack as dormant source material. It is not installed as a Codex or Claude Code skill by `install.sh`.
+- `automations/benny/` preserves the upstream Benny automation pack. Use `pstack/references/automations.md` to convert it into Codex or Claude Code runners.
 - `pstack/references/` contains principles, playbooks, delegation, writing, and install guidance.
+- `pstack/references/automations.md` maps Cursor automation concepts to Codex and Claude Code execution.
 - `pstack/references/codex-cli.md` contains direct Codex CLI examples for foreground, background, review, resume, and long-running work.
 - `pstack/scripts/spawn-codex-worker.sh` lets Claude Code launch Codex CLI workers for pstack subagent work.
 - `install.sh` installs the full suite into Codex, Claude Code, or both.
