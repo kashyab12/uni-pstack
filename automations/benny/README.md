@@ -6,7 +6,31 @@ the files in this directory are setup and automation sources. they do not appear
 
 ## codex and claude code
 
-this pack can be converted to codex or claude code. do not install these files unchanged as normal skills. translate the trigger, waits, integration writes, and editor handoff into a host runner. the portable mapping lives at [`../../pstack/references/automations.md`](../../pstack/references/automations.md).
+this pack can be run through codex or claude code with the native portable runner. do not install these files unchanged as normal skills. the runner translates the trigger, waits, integration writes, and editor handoff into a codex cli job with durable prompt, output, and log files. the portable mapping lives at [`../../pstack/references/automations.md`](../../pstack/references/automations.md).
+
+dry-run a triage prompt:
+
+```bash
+automations/benny/scripts/run.sh triage \
+  --repo "$PWD" \
+  --config .cursor/benny/configuration.yaml \
+  --source-channel C123 \
+  --message-ts 1712345678.000100 \
+  --dry-run
+```
+
+run reproduce in the background:
+
+```bash
+automations/benny/scripts/run.sh reproduce \
+  --repo "$PWD" \
+  --config .cursor/benny/configuration.yaml \
+  --source-channel C123 \
+  --message-ts 1712345678.000100 \
+  --background --json
+```
+
+when installed, the same runner is available at `~/.codex/skills/pstack/automations/benny/scripts/run.sh` and `~/.claude/skills/pstack/automations/benny/scripts/run.sh`. the claude path still launches codex cli.
 
 ## set it up
 
@@ -25,3 +49,17 @@ this pack can be converted to codex or claude code. do not install these files u
 4. keep user-owned configuration outside the copied pack, for example in `.cursor/benny/`. adapt [`configuration.example.yaml`](./templates/configuration.example.yaml) and [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md).
 5. commit `.cursor/settings.json`, `.cursor/automations/benny/`, and any secret-free configuration before enabling either automation.
 6. review each new automation draft or update existing automations in their editors. then send a harmless test report and verify every source-channel post stays in the original thread.
+
+## update
+
+from the uni-pstack repository, refresh upstream-managed benny files:
+
+```bash
+scripts/update-from-upstream.sh
+```
+
+then update installed codex and claude code copies:
+
+```bash
+./install.sh --all --force
+```

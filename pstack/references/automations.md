@@ -30,7 +30,42 @@ Cursor automations can be converted to Codex and Claude Code workflows. Do not i
 
 `automations/benny/` is the upstream Cursor automation pack for Slack issue triage and reproduce/fix. It is the canonical source for a portable Benny conversion.
 
-Port it as two host workflows:
+uni-pstack ships the portable conversion as a runner around that pack. The runner does not make the Benny operational files into slash skills; it renders the upstream prompt template, points the agent at the operational file, and launches Codex CLI with durable prompt, output, and log files.
+
+After `install.sh`, the runner is bundled inside the installed pstack skill:
+
+```bash
+~/.codex/skills/pstack/automations/benny/scripts/run.sh triage \
+  --repo "$PWD" \
+  --config .cursor/benny/configuration.yaml \
+  --source-channel C123 \
+  --message-ts 1712345678.000100 \
+  --dry-run
+```
+
+From Claude Code, use the Claude-installed copy:
+
+```bash
+~/.claude/skills/pstack/automations/benny/scripts/run.sh reproduce \
+  --repo "$PWD" \
+  --config .cursor/benny/configuration.yaml \
+  --source-channel C123 \
+  --message-ts 1712345678.000100 \
+  --background --json
+```
+
+The Claude path still launches Codex CLI. Do not replace it with Claude subagents unless the user explicitly asks for a Claude-only worker.
+
+The runner owns this data shape:
+
+- Trigger: `source_channel_id`, `message_ts`, optional `thread_ts`.
+- Config: a user-owned Benny YAML file outside the source pack.
+- Pack: the copied or installed `automations/benny/` source.
+- Prompt: rendered from the matching template and saved under `.pstack/benny/`.
+- Execution: `codex exec` with `gpt-5.5`, high reasoning, and supported fast/priority tier unless overridden.
+- Output: final message, optional JSONL log, optional PID file under `.pstack/benny/`.
+
+Run it as two host workflows:
 
 1. `benny-triage`
    - Trigger: new top-level issue report in the configured source channel, or a manual command that points at one source thread.
@@ -47,3 +82,23 @@ Port it as two host workflows:
 Claude Code should not spawn Claude subagents for pstack work by default. Its Benny runner should launch Codex workers with `pstack/scripts/spawn-codex-worker.sh` or direct `codex exec`.
 
 Codex should use native subagents when available. For long waits, use a monitor, background worker, or explicit resume path instead of assuming no output means failure.
+
+## Updating
+
+There are two update operations.
+
+1. Refresh this repository from upstream Cursor pstack:
+
+```bash
+scripts/update-from-upstream.sh
+```
+
+This uses a sparse upstream checkout under `.external/cursor-plugins`, refreshes upstream-managed Benny operational files and templates, records the upstream revision, and runs validation. It preserves native uni-pstack runner files. It intentionally does not overwrite the ported `skills/` tree because those files require the uni-pstack runtime adapter.
+
+2. Update installed Codex and Claude Code copies from this repository:
+
+```bash
+./install.sh --all --force
+```
+
+The installer copies `pstack/`, all ported subskills, and bundles `automations/benny/` inside the installed `pstack` skill. Existing installed copies are replaced only with `--force` or an explicit interactive confirmation.

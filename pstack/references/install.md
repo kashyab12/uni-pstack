@@ -2,7 +2,7 @@
 
 This package is intentionally portable. It installs the universal `pstack/` entry skill plus the upstream-derived subskills under `skills/`. Every installed folder uses standard `SKILL.md` frontmatter with `name` and `description`.
 
-The upstream Benny automation pack lives under `automations/benny/`. `install.sh` does not install those files as normal Codex or Claude Code skills because automation triggers, waits, and integration writes need a host runner. Convert the pack with [automations.md](automations.md).
+The upstream Benny automation pack lives under `automations/benny/`. `install.sh` does not install those files as normal Codex or Claude Code skills because automation triggers, waits, and integration writes need a host runner. It does bundle the pack under the installed `pstack/automations/benny/` resource directory so Codex and Claude Code can run the native portable Benny runner. See [automations.md](automations.md).
 
 ## Codex
 
@@ -97,6 +97,8 @@ Replace an existing install:
 ./install.sh --all --force
 ```
 
+This is also the update command for installed Codex and Claude Code copies after the uni-pstack repo changes.
+
 Preview without writing files:
 
 ```bash
@@ -129,4 +131,10 @@ Codex CLI:
 ```bash
 codex --version
 codex exec --help
+```
+
+Benny runner:
+
+```bash
+test -x "${CODEX_HOME:-$HOME/.codex}/skills/pstack/automations/benny/scripts/run.sh"
 ```

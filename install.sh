@@ -221,6 +221,9 @@ copy_one_skill() {
 
   if [[ "$dry_run" -eq 1 ]]; then
     echo "would install $label $name: $abs_src -> $dest"
+    if [[ "$name" == "pstack" && -d "$repo_dir/automations/benny" ]]; then
+      echo "would bundle $label benny automation runner: $repo_dir/automations/benny -> $dest/automations/benny"
+    fi
     return 0
   fi
 
@@ -234,6 +237,11 @@ copy_one_skill() {
   fi
 
   cp -R "$abs_src" "$dest"
+  if [[ "$name" == "pstack" && -d "$repo_dir/automations/benny" ]]; then
+    mkdir -p "$dest/automations"
+    rm -rf "$dest/automations/benny"
+    cp -R "$repo_dir/automations/benny" "$dest/automations/benny"
+  fi
   echo "installed $label $name: $dest"
 }
 
