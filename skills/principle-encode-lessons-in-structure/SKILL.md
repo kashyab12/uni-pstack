@@ -1,0 +1,40 @@
+---
+name: principle-encode-lessons-in-structure
+description: "Apply when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text."
+---
+
+# Encode Lessons in Structure
+## Uni-pstack Runtime Adapter
+
+This is a portable port of upstream Cursor pstack. Apply these overrides before following the original workflow:
+
+- Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
+- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
+- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
+- Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
+
+
+Encode recurring fixes in mechanisms (tools, code, metadata, automation) instead of textual instructions. Every error, human correction, and unexpected outcome is a learning signal. Capture it, route it, and close the loop.
+
+**Why:** Textual instructions are easy to miss. They require the reader to notice, remember, and comply. Structural mechanisms (lint rules, metadata flags, runtime checks, automation scripts) enforce the rule without cooperation.
+
+**Pattern:**
+When you catch yourself writing the same instruction a second time:
+1. Ask: can this be a lint rule, a metadata flag, a runtime check, or a script?
+2. If yes, encode it. Delete the instruction
+3. If no (genuinely requires judgment), make the instruction more prominent and add an example of the failure mode
+
+**Pick the strongest rung.** When more than one mechanism would work, choose the strongest the situation allows (an unrepresentable state that cannot compile, then a lint or banned API that fails CI, then a canonical helper, then a runtime check), because agents copy whatever the surrounding code already does and a weaker guard becomes the next template.
+
+**Corollary:** Don't paper over symptoms. If the fix is structural, ONLY use the structural fix. The instruction IS the symptom.
+
+**Feedback loop:**
+- **Capture every correction.** When the human intervenes or tests fail, decide if it's a one-off or a pattern.
+- **Route to the right layer.** One-off -> brain note. Recurring fix -> skill or lint rule. Systemic issue -> principle.
+- **Close the loop.** Don't just record. Apply now or create a concrete todo.
+
+**Anti-patterns:**
+- Acknowledging without recording ("I'll keep that in mind" does not persist)
+- Recording without routing (a brain note about a lint rule that should exist is wasted unless the lint rule gets implemented)
+- Fixing without generalizing (fixing one instance while leaving the recurring pattern intact)

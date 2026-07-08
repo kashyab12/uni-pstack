@@ -1,6 +1,6 @@
 # Installation
 
-This skill is intentionally portable. The same `pstack/` folder works in Codex and Claude Code because it uses standard `SKILL.md` frontmatter with `name` and `description`.
+This package is intentionally portable. It installs the universal `pstack/` entry skill plus the upstream-derived subskills under `skills/`. Every installed folder uses standard `SKILL.md` frontmatter with `name` and `description`.
 
 ## Codex
 
@@ -8,7 +8,7 @@ Install for all Codex projects:
 
 ```bash
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
-cp -R /path/to/uni-pstack/pstack "${CODEX_HOME:-$HOME/.codex}/skills/pstack"
+./install.sh --codex
 ```
 
 Restart Codex, or start a new Codex session, then invoke:
@@ -24,15 +24,13 @@ When pstack needs subagents in Codex, it should use native Codex subagents/multi
 Install for all Claude Code projects:
 
 ```bash
-mkdir -p "$HOME/.claude/skills"
-cp -R /path/to/uni-pstack/pstack "$HOME/.claude/skills/pstack"
+./install.sh --claude
 ```
 
 Or commit it as a project skill:
 
 ```bash
-mkdir -p .claude/skills
-cp -R /path/to/uni-pstack/pstack .claude/skills/pstack
+./install.sh --claude --claude-dir .claude/skills
 ```
 
 Restart Claude Code or run a fresh `claude` session, then invoke:
@@ -103,11 +101,11 @@ Preview without writing files:
 ./install.sh --all --dry-run
 ```
 
-Override destinations:
+Override skills directories:
 
 ```bash
-./install.sh --codex --codex-dir "$HOME/.codex/skills/pstack"
-./install.sh --claude --claude-dir ".claude/skills/pstack"
+./install.sh --codex --codex-dir "$HOME/.codex/skills"
+./install.sh --claude --claude-dir ".claude/skills"
 ```
 
 ## Verify

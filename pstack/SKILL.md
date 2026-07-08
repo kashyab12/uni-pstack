@@ -43,6 +43,14 @@ pstack uses Codex for delegated work.
 - Codex workers can take more than 10 minutes. Use long waits, output files, JSONL logs, and resume/fork commands instead of assuming silence means failure.
 - Give every worker a disjoint write scope or its own worktree. Shared mutable state is a design problem, not a prompt problem.
 
+## Installed Subskills
+
+This repo installs the universal `pstack` skill plus upstream-derived subskills under `skills/`. After installation, route to these directly when the user asks for them or when the playbook calls for them:
+
+- `architect`, `arena`, `blast-radius`, `figure-it-out`, `how`, `why`, `interrogate`, `reflect`, `recall`, `show-me-your-work`, `tdd`, `typescript-best-practices`, `unslop`.
+- `poteto-mode` remains available as the closest upstream mode skill, with the uni-pstack runtime adapter applied.
+- Principle skills are installed individually as `principle-*` so routed skills can reference and load the full rule when needed.
+
 ## Resource Map
 
 - [principles.md](references/principles.md): the principle index and concrete rules.

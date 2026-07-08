@@ -7,16 +7,16 @@ Usage:
   ./install.sh [targets] [options]
 
 Targets:
-  --codex                 Install to Codex user skills.
-  --claude                Install to Claude Code user skills.
+  --codex                 Install the full suite to Codex user skills.
+  --claude                Install the full suite to Claude Code user skills.
   --all                   Install to both Codex and Claude Code.
 
 Options:
-  --codex-dir DIR         Override Codex skill directory.
-                          Default: ${CODEX_HOME:-$HOME/.codex}/skills/pstack
-  --claude-dir DIR        Override Claude Code skill directory.
-                          Default: $HOME/.claude/skills/pstack
-  --force                 Replace an existing install without prompting.
+  --codex-dir DIR         Override Codex skills directory.
+                          Default: ${CODEX_HOME:-$HOME/.codex}/skills
+  --claude-dir DIR        Override Claude Code skills directory.
+                          Default: $HOME/.claude/skills
+  --force                 Replace existing installed skill folders without prompting.
   --yes                   Non-interactive. If no target is supplied, installs both.
   --dry-run               Print what would happen without writing files.
   -h, --help              Show this help.
@@ -29,7 +29,7 @@ Examples:
   ./install.sh
   ./install.sh --all --force
   ./install.sh --codex
-  ./install.sh --claude --claude-dir .claude/skills/pstack
+  ./install.sh --claude --claude-dir .claude/skills
 USAGE
 }
 
@@ -40,8 +40,8 @@ force=0
 assume_yes=0
 dry_run=0
 
-codex_dir="${CODEX_HOME:-$HOME/.codex}/skills/pstack"
-claude_dir="$HOME/.claude/skills/pstack"
+codex_dir="${CODEX_HOME:-$HOME/.codex}/skills"
+claude_dir="$HOME/.claude/skills"
 
 die() {
   echo "install.sh: $*" >&2
@@ -52,20 +52,15 @@ is_interactive() {
   [[ -t 0 && -t 1 && "$assume_yes" -eq 0 ]]
 }
 
-abs_path() {
+abs_dir() {
   local input="$1"
-  local parent
-  local base
-  parent="$(dirname "$input")"
-  base="$(basename "$input")"
-  if [[ -d "$parent" ]]; then
-    parent="$(cd "$parent" && pwd)"
-  elif [[ "$parent" = /* ]]; then
-    parent="$parent"
+  if [[ -d "$input" ]]; then
+    (cd "$input" && pwd)
+  elif [[ "$input" = /* ]]; then
+    printf '%s\n' "$input"
   else
-    parent="$(pwd)/$parent"
+    printf '%s/%s\n' "$(pwd)" "$input"
   fi
-  printf '%s/%s\n' "$parent" "$base"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -87,11 +82,11 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --codex-dir)
-      codex_dir="${2:?missing Codex directory}"
+      codex_dir="${2:?missing Codex skills directory}"
       shift 2
       ;;
     --claude-dir)
-      claude_dir="${2:?missing Claude Code directory}"
+      claude_dir="${2:?missing Claude Code skills directory}"
       shift 2
       ;;
     --force)
@@ -119,15 +114,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-skill_dir="$repo_dir/pstack"
 
-if [[ ! -f "$skill_dir/SKILL.md" ]]; then
+if [[ ! -f "$repo_dir/pstack/SKILL.md" ]]; then
   die "could not find pstack/SKILL.md next to install.sh"
+fi
+
+if [[ ! -d "$repo_dir/skills" ]]; then
+  die "could not find skills/ next to install.sh"
 fi
 
 prompt_targets() {
   local answer
-  echo "Install pstack skill."
+  echo "Install uni-pstack skill suite."
   echo
   echo "Targets:"
   echo "  1. Codex       -> $codex_dir"
@@ -194,44 +192,71 @@ confirm_replace() {
   esac
 }
 
-copy_skill() {
-  local label="$1"
-  local dest="$2"
-  local abs_dest
-  local abs_src
-  abs_dest="$(abs_path "$dest")"
-  abs_src="$(cd "$skill_dir" && pwd)"
+skill_sources() {
+  local src
+  printf '%s\n' "$repo_dir/pstack"
+  for src in "$repo_dir"/skills/*; do
+    [[ -f "$src/SKILL.md" ]] || continue
+    printf '%s\n' "$src"
+  done
+}
 
-  if [[ "$abs_dest" == "$abs_src" ]]; then
-    echo "$label already points at source: $abs_dest"
+copy_one_skill() {
+  local label="$1"
+  local root="$2"
+  local src="$3"
+  local name
+  local abs_root
+  local abs_src
+  local dest
+  name="$(basename "$src")"
+  abs_root="$(abs_dir "$root")"
+  abs_src="$(cd "$src" && pwd)"
+  dest="$abs_root/$name"
+
+  if [[ "$dest" == "$abs_src" ]]; then
+    echo "$label $name already points at source: $dest"
     return 0
   fi
 
   if [[ "$dry_run" -eq 1 ]]; then
-    echo "would install $label: $abs_src -> $abs_dest"
+    echo "would install $label $name: $abs_src -> $dest"
     return 0
   fi
 
-  mkdir -p "$(dirname "$abs_dest")"
+  mkdir -p "$abs_root"
 
-  if [[ -e "$abs_dest" ]]; then
-    if ! confirm_replace "$abs_dest"; then
-      die "$label destination exists: $abs_dest (use --force to replace)"
+  if [[ -e "$dest" ]]; then
+    if ! confirm_replace "$dest"; then
+      die "$label destination exists: $dest (use --force to replace)"
     fi
-    rm -rf "$abs_dest"
+    rm -rf "$dest"
   fi
 
-  cp -R "$abs_src" "$abs_dest"
-  echo "installed $label: $abs_dest"
+  cp -R "$abs_src" "$dest"
+  echo "installed $label $name: $dest"
 }
 
-echo "Source: $skill_dir"
+copy_suite() {
+  local label="$1"
+  local root="$2"
+  local src
+  local count=0
+  echo "Target $label: $(abs_dir "$root")"
+  while IFS= read -r src; do
+    copy_one_skill "$label" "$root" "$src"
+    count=$((count + 1))
+  done < <(skill_sources)
+  echo "installed $count $label skill folders"
+}
+
+echo "Source: $repo_dir"
 if [[ "$install_codex" -eq 1 ]]; then
-  copy_skill "Codex" "$codex_dir"
+  copy_suite "Codex" "$codex_dir"
 fi
 
 if [[ "$install_claude" -eq 1 ]]; then
-  copy_skill "Claude Code" "$claude_dir"
+  copy_suite "Claude Code" "$claude_dir"
 fi
 
 echo
