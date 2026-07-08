@@ -8,25 +8,25 @@ This ports the Cursor pstack workflow into one standard skill folder:
 - `pstack/references/` contains principles, playbooks, delegation, writing, and install guidance.
 - `pstack/references/codex-cli.md` contains direct Codex CLI examples for foreground, background, review, resume, and long-running work.
 - `pstack/scripts/spawn-codex-worker.sh` lets Claude Code launch Codex CLI workers for pstack subagent work.
-- `pstack/scripts/install.sh` installs the skill into Codex, Claude Code, or both.
+- `install.sh` installs the skill into Codex, Claude Code, or both.
 
 Install locally. In a human terminal this shows Codex and Claude Code as options with both selected by default:
 
 ```bash
-pstack/scripts/install.sh
+./install.sh
 ```
 
 Automation:
 
 ```bash
-pstack/scripts/install.sh --all --yes
+./install.sh --all --yes
 ```
 
 Install only one target:
 
 ```bash
-pstack/scripts/install.sh --codex
-pstack/scripts/install.sh --claude
+./install.sh --codex
+./install.sh --claude
 ```
 
 Use it:

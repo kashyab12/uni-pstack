@@ -73,7 +73,7 @@ Codex can run longer than 10 minutes. Use output files, JSONL logs, PIDs for bac
 From this repository:
 
 ```bash
-pstack/scripts/install.sh
+./install.sh
 ```
 
 In an interactive terminal, the installer shows Codex and Claude Code as options with both selected by default. Press Enter to install both.
@@ -81,33 +81,33 @@ In an interactive terminal, the installer shows Codex and Claude Code as options
 For automation, use explicit flags:
 
 ```bash
-pstack/scripts/install.sh --all --yes
+./install.sh --all --yes
 ```
 
 Use one target if needed:
 
 ```bash
-pstack/scripts/install.sh --codex
-pstack/scripts/install.sh --claude
+./install.sh --codex
+./install.sh --claude
 ```
 
 Replace an existing install:
 
 ```bash
-pstack/scripts/install.sh --all --force
+./install.sh --all --force
 ```
 
 Preview without writing files:
 
 ```bash
-pstack/scripts/install.sh --all --dry-run
+./install.sh --all --dry-run
 ```
 
 Override destinations:
 
 ```bash
-pstack/scripts/install.sh --codex --codex-dir "$HOME/.codex/skills/pstack"
-pstack/scripts/install.sh --claude --claude-dir ".claude/skills/pstack"
+./install.sh --codex --codex-dir "$HOME/.codex/skills/pstack"
+./install.sh --claude --claude-dir ".claude/skills/pstack"
 ```
 
 ## Verify

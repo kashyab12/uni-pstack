@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  install.sh [targets] [options]
+  ./install.sh [targets] [options]
 
 Targets:
   --codex                 Install to Codex user skills.
@@ -26,10 +26,10 @@ Human mode:
   targets to install. Press Enter to accept the default: Codex and Claude Code.
 
 Examples:
-  pstack/scripts/install.sh
-  pstack/scripts/install.sh --all --force
-  pstack/scripts/install.sh --codex
-  pstack/scripts/install.sh --claude --claude-dir .claude/skills/pstack
+  ./install.sh
+  ./install.sh --all --force
+  ./install.sh --codex
+  ./install.sh --claude --claude-dir .claude/skills/pstack
 USAGE
 }
 
@@ -118,8 +118,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-skill_dir="$(cd "$script_dir/.." && pwd)"
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+skill_dir="$repo_dir/pstack"
+
+if [[ ! -f "$skill_dir/SKILL.md" ]]; then
+  die "could not find pstack/SKILL.md next to install.sh"
+fi
 
 prompt_targets() {
   local answer
