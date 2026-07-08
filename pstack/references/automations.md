@@ -98,7 +98,7 @@ This uses a sparse upstream checkout under `.external/cursor-plugins`, refreshes
 2. Update installed Codex and Claude Code copies from this repository:
 
 ```bash
-./install.sh --all --force
+./install.sh --update
 ```
 
-The installer copies `pstack/`, all ported subskills, and bundles `automations/benny/` inside the installed `pstack` skill. Existing installed copies are replaced only with `--force` or an explicit interactive confirmation.
+The installer copies `pstack/`, all ported subskills, and bundles `automations/benny/` inside the installed `pstack` skill. `--update` is non-interactive and replaces existing installed copies. From an installed skill, use `pstack/scripts/update-self.sh`; it fetches a shallow uni-pstack source checkout and then runs `install.sh --update`.

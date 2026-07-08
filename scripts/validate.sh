@@ -55,6 +55,7 @@ echo "all installed skills validate"
 echo "== shell parse checks =="
 bash -n "$repo_dir/install.sh"
 bash -n "$repo_dir/pstack/scripts/spawn-codex-worker.sh"
+bash -n "$repo_dir/pstack/scripts/update-self.sh"
 bash -n "$repo_dir/automations/benny/scripts/run.sh"
 bash -n "$repo_dir/scripts/update-from-upstream.sh"
 bash -n "$repo_dir/skills/show-me-your-work/scripts/log.sh"
@@ -77,8 +78,11 @@ echo "== install smoke =="
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp" "$benny_tmp"' EXIT
 HOME="$tmp/home" CODEX_HOME="$tmp/codex" "$repo_dir/install.sh" --all --yes >/tmp/uni-pstack-install.log
+HOME="$tmp/home" CODEX_HOME="$tmp/codex" "$repo_dir/install.sh" --update >/tmp/uni-pstack-update.log
+HOME="$tmp/home" CODEX_HOME="$tmp/codex" "$repo_dir/pstack/scripts/update-self.sh" --source "$repo_dir" --dry-run >/tmp/uni-pstack-self-update.log
 test -f "$tmp/codex/skills/pstack/SKILL.md"
 test -f "$tmp/codex/skills/pstack/agents/poteto-agent.md"
+test -x "$tmp/codex/skills/pstack/scripts/update-self.sh"
 test -x "$tmp/codex/skills/pstack/automations/benny/scripts/run.sh"
 test -f "$tmp/codex/skills/pstack/automations/benny/FOR_AGENTS.md"
 test -f "$tmp/codex/skills/architect/references/runner-prompt.md"
@@ -87,6 +91,8 @@ test -f "$tmp/codex/skills/why/references/sources/slack.md"
 test -f "$tmp/home/.claude/skills/arena/SKILL.md"
 count="$(find "$tmp/codex/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
 [[ "$count" = 37 ]] || fail "expected 37 Codex skill folders, got $count"
+rg -q 'Mode: update installed copies' /tmp/uni-pstack-update.log
+rg -q 'would install Codex pstack' /tmp/uni-pstack-self-update.log
 echo "install suite ok: $count skills"
 
 echo "validation passed"

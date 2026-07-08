@@ -1,6 +1,6 @@
 ---
 name: pstack
-description: "Portable pstack engineering workflow for Claude Code and Codex. Use for /pstack, poteto-mode style work, rigorous multi-step coding tasks, bug fixes, investigations, refactors, features, performance work, skill authoring, reviews, autonomous runs, arena-style parallel attempts, or any request that should use Codex subagents, Codex CLI workers, explicit verification, and concise unslopped engineering prose."
+description: "Portable pstack engineering workflow for Claude Code and Codex. Use for /pstack, poteto-mode style work, rigorous multi-step coding tasks, bug fixes, investigations, refactors, features, performance work, skill authoring, reviews, autonomous runs, arena-style parallel attempts, updating pstack itself, or any request that should use Codex subagents, Codex CLI workers, explicit verification, and concise unslopped engineering prose."
 ---
 
 # pstack
@@ -19,6 +19,26 @@ For any multi-step task:
 6. Read [writing.md](references/writing.md) before the final reply, PR text, commit body, or any agent-facing prose.
 
 If the request is only installation, configuration, or packaging, read [install.md](references/install.md) instead of the full playbook set.
+
+## Update Protocol
+
+When asked to update pstack, uni-pstack, this skill, or installed pstack copies:
+
+1. Prefer the bundled updater:
+   ```bash
+   pstack/scripts/update-self.sh
+   ```
+   From an installed Codex copy this is usually `${CODEX_HOME:-$HOME/.codex}/skills/pstack/scripts/update-self.sh`. From Claude Code this is usually `~/.claude/skills/pstack/scripts/update-self.sh`.
+2. If already inside the uni-pstack source repository, use:
+   ```bash
+   ./install.sh --update
+   ```
+3. Narrow the target only when requested:
+   ```bash
+   ./install.sh --update --codex
+   ./install.sh --update --claude
+   ```
+4. After updating, run or cite the verification from [install.md](references/install.md). If the source repo changed, run `scripts/validate.sh` before reporting success.
 
 ## Non-Negotiables
 

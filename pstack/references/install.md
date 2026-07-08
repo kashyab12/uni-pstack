@@ -97,12 +97,30 @@ Replace an existing install:
 ./install.sh --all --force
 ```
 
-This is also the update command for installed Codex and Claude Code copies after the uni-pstack repo changes.
+Update installed Codex and Claude Code copies from the current source repo:
+
+```bash
+./install.sh --update
+```
+
+Narrow the update if needed:
+
+```bash
+./install.sh --update --codex
+./install.sh --update --claude
+```
+
+From an installed skill with no source checkout nearby, use the bundled self-updater. It keeps a shallow checkout under `${XDG_CACHE_HOME:-$HOME/.cache}/uni-pstack/source`, fetches `main`, then runs `install.sh --update`:
+
+```bash
+${CODEX_HOME:-$HOME/.codex}/skills/pstack/scripts/update-self.sh
+~/.claude/skills/pstack/scripts/update-self.sh
+```
 
 Preview without writing files:
 
 ```bash
-./install.sh --all --dry-run
+./install.sh --update --dry-run
 ```
 
 Override skills directories:
@@ -137,4 +155,10 @@ Benny runner:
 
 ```bash
 test -x "${CODEX_HOME:-$HOME/.codex}/skills/pstack/automations/benny/scripts/run.sh"
+```
+
+Self-updater:
+
+```bash
+test -x "${CODEX_HOME:-$HOME/.codex}/skills/pstack/scripts/update-self.sh"
 ```

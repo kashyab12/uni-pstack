@@ -61,5 +61,5 @@ scripts/update-from-upstream.sh
 then update installed codex and claude code copies:
 
 ```bash
-./install.sh --all --force
+./install.sh --update
 ```

@@ -12,6 +12,8 @@ Targets:
   --all                   Install to both Codex and Claude Code.
 
 Options:
+  --update                Update installed copies from this repo. Equivalent to
+                          --all --force --yes when no target is supplied.
   --codex-dir DIR         Override Codex skills directory.
                           Default: ${CODEX_HOME:-$HOME/.codex}/skills
   --claude-dir DIR        Override Claude Code skills directory.
@@ -27,6 +29,8 @@ Human mode:
 
 Examples:
   ./install.sh
+  ./install.sh --update
+  ./install.sh --update --codex
   ./install.sh --all --force
   ./install.sh --codex
   ./install.sh --claude --claude-dir .claude/skills
@@ -39,6 +43,7 @@ target_supplied=0
 force=0
 assume_yes=0
 dry_run=0
+update=0
 
 codex_dir="${CODEX_HOME:-$HOME/.codex}/skills"
 claude_dir="$HOME/.claude/skills"
@@ -91,6 +96,12 @@ while [[ $# -gt 0 ]]; do
       ;;
     --force)
       force=1
+      shift
+      ;;
+    --update)
+      update=1
+      force=1
+      assume_yes=1
       shift
       ;;
     --yes|-y)
@@ -158,7 +169,10 @@ prompt_targets() {
 }
 
 if [[ "$target_supplied" -eq 0 ]]; then
-  if is_interactive; then
+  if [[ "$update" -eq 1 ]]; then
+    install_codex=1
+    install_claude=1
+  elif is_interactive; then
     prompt_targets
   else
     install_codex=1
@@ -259,6 +273,9 @@ copy_suite() {
 }
 
 echo "Source: $repo_dir"
+if [[ "$update" -eq 1 ]]; then
+  echo "Mode: update installed copies"
+fi
 if [[ "$install_codex" -eq 1 ]]; then
   copy_suite "Codex" "$codex_dir"
 fi

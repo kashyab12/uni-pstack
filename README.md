@@ -78,7 +78,14 @@ scripts/update-from-upstream.sh
 Update installed Codex and Claude Code copies from this repo:
 
 ```bash
-./install.sh --all --force
+./install.sh --update
+```
+
+From an installed pstack skill, update itself through the bundled helper:
+
+```bash
+${CODEX_HOME:-$HOME/.codex}/skills/pstack/scripts/update-self.sh
+~/.claude/skills/pstack/scripts/update-self.sh
 ```
 
 Source inspiration: Cursor's MIT-licensed `pstack` plugin at <https://github.com/cursor/plugins/tree/main/pstack>.
