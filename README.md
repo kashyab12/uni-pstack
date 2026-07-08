@@ -6,11 +6,13 @@ This ports the Cursor pstack workflow into a portable skill suite:
 
 - `pstack/SKILL.md` is the entry point.
 - `skills/` contains the upstream pstack subskills, including `architect`, `arena`, `how`, `why`, `interrogate`, `reflect`, `tdd`, `typescript-best-practices`, `unslop`, and the principle skills.
-- `agents/poteto-agent.md` keeps the upstream agent shape as a portable reference. Codex and Claude delegation still route through the uni-pstack runtime adapter.
+- `agents/poteto-agent.md` keeps the upstream agent shape as a portable reference. The installed `pstack/agents/poteto-agent.md` copy travels with the `pstack` skill.
+- `automations/benny/` preserves the upstream Benny automation pack as dormant source material. It is not installed as a Codex or Claude Code skill by `install.sh`.
 - `pstack/references/` contains principles, playbooks, delegation, writing, and install guidance.
 - `pstack/references/codex-cli.md` contains direct Codex CLI examples for foreground, background, review, resume, and long-running work.
 - `pstack/scripts/spawn-codex-worker.sh` lets Claude Code launch Codex CLI workers for pstack subagent work.
 - `install.sh` installs the full suite into Codex, Claude Code, or both.
+- `scripts/validate.sh` runs the repeatable repo validation: upstream skill parity, skill frontmatter validation, shell parse checks, and install smoke tests.
 
 Install locally. In a human terminal this shows Codex and Claude Code as options with both selected by default:
 
@@ -48,7 +50,7 @@ Use $interrogate to pressure-test this diff.
 Claude Code should delegate pstack subagent work through Codex CLI workers:
 
 ```bash
-pstack/scripts/spawn-codex-worker.sh --cwd "$PWD" --output ".pstack/workers/worker.md" -- "Task prompt"
+~/.claude/skills/pstack/scripts/spawn-codex-worker.sh --cwd "$PWD" --output ".pstack/workers/worker.md" -- "Task prompt"
 ```
 
 Source inspiration: Cursor's MIT-licensed `pstack` plugin at <https://github.com/cursor/plugins/tree/main/pstack>.

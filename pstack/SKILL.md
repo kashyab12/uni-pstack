@@ -39,7 +39,7 @@ pstack uses Codex for delegated work.
 - In Codex, use native Codex subagents/multi-agent tools when available. Prefer `worker` for bounded code changes and `explorer` for specific read-only codebase questions.
 - In Claude Code, use Codex CLI workers via `scripts/spawn-codex-worker.sh` or direct `codex exec` for pstack Codex delegation. Do not replace pstack's Codex delegation with ordinary Claude subagents unless the task explicitly needs a Claude model.
 - Codex delegation default: `gpt-5.5`, high reasoning, and the supported fast/priority tier. This replaces upstream pstack's Composer/Claude Opus model defaults.
-- Claude-only worker default, when the host is Claude Code and the task explicitly uses a Claude-spawned worker rather than Codex: Fable 5 high reasoning, using the local Claude model slug for Fable 5. For UI/UX Claude-only workers, use Fable 5 high for hard design judgment and medium for cheaper visual iteration. This Claude-only rule must not be applied inside Codex-hosted skill runs.
+- Claude-only fallback policy is host-specific and lives in [delegation.md](references/delegation.md). Do not apply Claude-only model rules inside Codex-hosted skill runs.
 - Codex workers can take more than 10 minutes. Use long waits, output files, JSONL logs, and resume/fork commands instead of assuming silence means failure.
 - Give every worker a disjoint write scope or its own worktree. Shared mutable state is a design problem, not a prompt problem.
 

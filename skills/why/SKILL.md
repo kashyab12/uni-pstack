@@ -10,7 +10,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
 - Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
-- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
 
@@ -125,10 +125,7 @@ Aim for a complete **coverage map**, not a minimal one. A null result from an is
 
 Launch all matching investigators in a single message so they run concurrently. One investigator per category lets each specialize in one tool's query vocabulary and result shape. Don't ask one agent to cover multiple MCPs.
 
-Subagent config (each):
-- `subagent_type`: `generalPurpose`
-- `model`: your configured why-investigators model (default `gpt-5.5 high reasoning`)
-- `readonly`: `false` (agent mode). **Do not use readonly/Ask mode.** It strips MCP access, which disables MCP-backed investigators entirely. The source control investigator would be safe in readonly, but keep modes uniform. Investigators still shouldn't write anything. That's a posture, not a sandbox.
+Delegate each investigator with pstack's host-native rules. In Codex, use native Codex subagents. In Claude Code, use Codex CLI workers. Use the configured why-investigators model default: `gpt-5.5` with high reasoning and the supported fast/priority tier. Give investigators tool/MCP access when their evidence category needs it. Investigators still shouldn't write anything. That's a posture, not a sandbox.
 
 Each investigator gets:
 1. The base prompt from `references/investigator-prompt.md`
@@ -170,11 +167,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 ## Step 4. Synthesize
 
-Spawn one synthesizer subagent:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured why-synthesizer model (default `gpt-5.5 high reasoning`)
-- `readonly`: `false` (agent mode). The synthesizer's quality check spot-verifies citations, which can require MCP access. Readonly/Ask mode strips MCPs and defeats that.
+Spawn one synthesizer using pstack's host-native delegation rules. Use the configured why-synthesizer model default: `gpt-5.5` with high reasoning and the supported fast/priority tier. The synthesizer's quality check spot-verifies citations, which can require MCP access.
 
 The synthesizer gets:
 1. The investigator findings, including any null results and any categories skipped with justification

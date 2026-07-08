@@ -10,7 +10,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
 - Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
-- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
 
@@ -42,14 +42,14 @@ Write one clear paragraph. Reviewers challenge whether the work achieves the int
 
 ## Step 3, Spawn Reviewers
 
-Launch one reviewer per model in your configured interrogate list (defaults `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`), all in a single message.
+Launch one reviewer per model in your configured interrogate list (defaults `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`), all concurrently.
 
 For each reviewer:
-- `subagent_type`: `generalPurpose`
-- `model`: one model from the configured interrogate list
-- `readonly`: `true`
+- Delegate with pstack's host-native rules. In Codex, use native Codex subagents. In Claude Code, use Codex CLI workers.
+- Use one model from the configured interrogate list.
+- Keep reviewers read-only by instruction and prompt contract when the host does not expose a read-only tool mode.
 
-If a configured model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Task tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured defaults. Do not block the review on the slug issue.
+If a configured model slug is rejected as unresolvable when you try to spawn the reviewer, check the valid slugs in the host error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate follow-up to update the configured defaults. Do not block the review on the slug issue.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

@@ -9,7 +9,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
 - Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
-- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
 

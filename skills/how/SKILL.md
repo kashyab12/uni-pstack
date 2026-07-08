@@ -10,7 +10,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
 - Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
-- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
 
@@ -52,11 +52,7 @@ Decompose the question into 2-4 parallel exploration angles, each a distinct sli
 
 The right decomposition depends on the question. Use your judgment. Narrow questions: 2 explorers is fine. Broad subsystems: up to 4.
 
-Spawn all explorers in a single message:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explorer model (default `gpt-5.5 high reasoning`)
-- `readonly`: `true`
+Delegate all explorers concurrently using the installed pstack delegation rules. In Codex, use native Codex explorer subagents when available. In Claude Code, launch Codex CLI workers with `pstack/scripts/spawn-codex-worker.sh --role explorer`. Do not pass Cursor-only fields such as `subagent_type`, `readonly`, or `Task` payload schemas to hosts that do not support them. Use the configured how-explorer model default: `gpt-5.5` with high reasoning and the supported fast/priority tier.
 
 Each explorer gets the same base prompt from `references/explorer-prompt.md` plus a specific exploration angle naming its slice. Each explorer should:
 - Start broad: Glob for relevant directories, Grep for key types/interfaces/class names
@@ -71,11 +67,7 @@ Then proceed to Step 3.
 
 ### Step 2b. Direct Explain (simple questions)
 
-Spawn a single Task subagent that explores and explains in one pass:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `gpt-5.5 high reasoning`)
-- `readonly`: `true`
+Delegate one explorer/explainer that explores and explains in one pass. In Codex, use a native Codex explorer subagent. In Claude Code, launch a Codex CLI worker with `--role explorer`. Use the configured how-explainer model default: `gpt-5.5` with high reasoning and the supported fast/priority tier.
 
 The agent does its own exploration (Glob, Grep, Read) and writes the explanation directly. Read `references/explainer-prompt.md` for the communication style and output format. Same structure, just no explorer findings as input.
 
@@ -83,11 +75,7 @@ Proceed to Step 4.
 
 ### Step 3. Synthesize (complex questions only)
 
-Once all explorers return, spawn a single Task subagent to synthesize their findings into one coherent explanation:
-
-- `subagent_type`: `generalPurpose`
-- `model`: your configured how-explainer model (default `gpt-5.5 high reasoning`)
-- `readonly`: `true`
+Once all explorers return, delegate one synthesizer to turn their findings into one coherent explanation. In Codex, use a native Codex worker or explorer subagent. In Claude Code, launch a Codex CLI worker. Use the configured how-explainer model default: `gpt-5.5` with high reasoning and the supported fast/priority tier.
 
 The explainer gets all explorers' findings and writes the human-facing explanation (output format below). Read `references/explainer-prompt.md` for the full prompt template. The explainer reconciles overlapping findings, resolves contradictions, and weaves the slices into a unified picture.
 
@@ -122,9 +110,9 @@ Run the full explain flow above (Steps 1-4). You must understand the architectur
 After the explanation is complete, spawn one architectural critic per model in your configured how-critics list (defaults `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`, `gpt-5.5 high reasoning`), all in a single message.
 
 For each critic:
-- `subagent_type`: `generalPurpose`
-- `model`: one model from the configured how-critics list. These are minimum reasoning levels. The lead should escalate any model when the architecture warrants deeper analysis.
-- `readonly`: `true`
+- Delegate with pstack's host-native rules. In Codex, use native Codex subagents. In Claude Code, use Codex CLI workers.
+- Use one model from the configured how-critics list. These are minimum reasoning levels. The lead should escalate any model when the architecture warrants deeper analysis.
+- Keep critics read-only by instruction and prompt contract when the host does not expose a read-only tool mode.
 
 Read `references/critic-prompt.md` for the prompt template. Each critic gets:
 1. The explanation from Step 1 (so they don't re-explore)

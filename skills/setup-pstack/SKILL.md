@@ -1,6 +1,6 @@
 ---
 name: setup-pstack
-description: Configure uni-pstack model defaults and delegation environment for Codex and Claude Code. Use for /setup-pstack, "configure pstack models", "set pstack to gpt 5.5 high fast", or changing pstack's Codex/Fable model choices.
+description: Configure uni-pstack Codex delegation defaults and host environment for Codex and Claude Code. Use for /setup-pstack, "configure pstack models", "set pstack to gpt 5.5 high fast", or changing pstack's Codex model choices.
 ---
 
 # Setup pstack
@@ -11,8 +11,7 @@ Configure host-neutral uni-pstack defaults. Do not write Cursor rule files or re
 
 - Codex-hosted pstack: use native Codex subagents with `gpt-5.5`, high reasoning, and the supported fast or priority tier.
 - Claude Code-hosted pstack: delegate pstack subagent work to Codex CLI workers with `gpt-5.5`, high reasoning, and `fast` when the local Codex CLI accepts it.
-- Claude-only workers: use Fable 5 high only when the task explicitly requires Claude instead of Codex.
-- Claude-only UI/UX judgment: use Fable 5 high for hard calls and Fable 5 medium for cheaper iteration. Do not apply this rule inside Codex-hosted runs.
+- Claude-only fallback policy is host-specific and lives in the installed pstack delegation reference. Do not apply Claude-only model rules inside Codex-hosted runs.
 
 ## Configuration file
 
@@ -24,10 +23,9 @@ Create the directory if missing and write only assignments the host can honor:
 PSTACK_CODEX_MODEL=gpt-5.5
 PSTACK_CODEX_REASONING=high
 PSTACK_CODEX_SERVICE_TIER=fast
-PSTACK_CLAUDE_MODEL=fable-5
-PSTACK_CLAUDE_REASONING=high
-PSTACK_CLAUDE_UI_REASONING=medium
 ```
+
+Optional Claude-only fallback values belong in the host's Claude configuration, not in Codex-hosted pstack runs. See the installed pstack delegation reference.
 
 If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line or set the closest supported tier. Preserve `gpt-5.5` and high reasoning unless the account does not expose that model.
 
@@ -47,8 +45,7 @@ If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line 
 6. Confirm the active defaults in plain language:
 
 - Codex workers: model, reasoning, and service tier.
-- Claude-only fallback: model and reasoning.
-- UI/UX Claude-only fallback: high or medium.
+- Claude-only fallback: report only when the host is Claude Code and the user explicitly configured one.
 
 ## Role mapping
 

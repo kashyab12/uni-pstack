@@ -10,7 +10,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
 - Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
-- In Claude Code only, if a task explicitly needs a Claude-only worker instead of Codex, use Fable 5 high. For Claude-only UI or UX judgment, use Fable 5 high for hard calls and medium for cheaper iteration. Do not apply Fable guidance inside Codex-hosted runs.
+- Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
 
@@ -22,7 +22,7 @@ This is a portable port of upstream Cursor pstack. Apply these overrides before 
 Remaining triggers:
 
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
-- About to `AskQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. The ask is the slow path. A throwaway probe usually answers faster, and it hands the human a result to react to instead of a decision to make.
+- About to ask the human on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. Use a structured user-input tool when available; otherwise ask one concise chat question. The ask is the slow path. A throwaway probe usually answers faster, and it hands the human a result to react to instead of a decision to make.
 - Any code → name the data shape first.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Contested design → the **interrogate** skill (four-model adversarial) before shipping.
@@ -111,7 +111,7 @@ Comments follow the same rule as the reply. Write them clean as you go; a flat "
 
 ## Playbooks
 
-Your first todolist actions are the matched playbook's steps, copied in verbatim when the playbook file exists, before any task-specific todos and before you reason about the task. If this portable package does not include a referenced upstream playbook file, use the installed `pstack/references/playbooks.md` guidance and keep the same named step in the todo list with a one-line adaptation note. Skipping silently is not allowed.
+Your first todolist actions are the matched playbook's steps, copied in verbatim when the playbook file exists, before any task-specific todos and before you reason about the task. If this portable package does not include a referenced upstream playbook file, use the `playbooks.md` guidance from the installed `pstack` skill and keep the same named step in the todo list with a one-line adaptation note. Skipping silently is not allowed.
 
 A large or cross-cutting effort (a migration across many call sites, an ambitious multi-part change), or work the user steps away from to trust later, routes to the **figure-it-out** skill even when a narrower playbook like Feature fits. Use **figure-it-out** whenever no bundled playbook fits. It designs a bespoke, rigorous playbook for the task.
 

@@ -2,6 +2,8 @@
 
 This package is intentionally portable. It installs the universal `pstack/` entry skill plus the upstream-derived subskills under `skills/`. Every installed folder uses standard `SKILL.md` frontmatter with `name` and `description`.
 
+The upstream Benny automation pack lives under `automations/benny/` as dormant source material. `install.sh` does not install it as Codex or Claude Code skills. Treat it as a reference for porting automation behavior, not as a ready Claude/Codex automation.
+
 ## Codex
 
 Install for all Codex projects:
@@ -17,7 +19,7 @@ Restart Codex, or start a new Codex session, then invoke:
 Use $pstack to fix this bug.
 ```
 
-When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.5` with high reasoning and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.5`, use it and report that fallback. Do not apply Claude-only `fable-5` rules in Codex.
+When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.5` with high reasoning and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.5`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
 
 ## Claude Code
 

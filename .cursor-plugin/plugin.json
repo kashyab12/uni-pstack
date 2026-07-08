@@ -1,0 +1,30 @@
+{
+	"name": "uni-pstack",
+	"displayName": "uni-pstack",
+	"version": "0.10.0",
+	"description": "Portable pstack skill suite for Codex and Claude Code, with upstream Cursor skills and agents preserved for structural parity.",
+	"author": {
+		"name": "Lauren Tan"
+	},
+	"homepage": "https://github.com/kashyab12/uni-pstack",
+	"repository": "https://github.com/kashyab12/uni-pstack",
+	"license": "MIT",
+	"keywords": [
+		"pstack",
+		"poteto-mode",
+		"workflow",
+		"principles",
+		"agent-style",
+		"subagents",
+		"unslop"
+	],
+	"category": "developer-tools",
+	"tags": [
+		"workflow",
+		"principles",
+		"review",
+		"planning"
+	],
+	"skills": "./skills/",
+	"agents": "./agents/"
+}
