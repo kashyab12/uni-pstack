@@ -1,0 +1,4 @@
+interface:
+  display_name: "pstack"
+  short_description: "Rigorous agent workflows with Codex delegation"
+  default_prompt: "Use $pstack to run this engineering task with rigorous playbook selection, verification, and Codex subagents."
