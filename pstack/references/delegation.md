@@ -2,6 +2,15 @@
 
 Use delegation to increase independent coverage without losing ownership. The parent agent owns the result, reviews artifacts, and writes the final summary.
 
+## Executor Routing
+
+In Claude Code, a Fable-class parent orchestrates and Codex executes by default. Classify each delegable unit of work before spawning; do not ask the user which executor to use.
+
+- Default executor: Codex CLI worker, `gpt-5.5`, high reasoning, fast tier. Applies to backend and application logic, refactors, bug fixes, tests, performance work, data plumbing, scripts, build and infra changes, migrations, and read-only exploration.
+- UI/UX exception: Codex is not the executor. The Fable parent implements it directly, or spawns a Claude-only worker per the Model Policy below. Applies to visual layout, styling and CSS, component and design-system work, animation and interaction feel, information hierarchy, UX flows and microcopy, and anything judged by how it looks or feels on screen.
+- Mixed tasks: split at the boundary. Codex owns the logic slice (state, data, handlers, API); Fable owns the visual slice (markup structure, styling, interaction polish). Give each slice a disjoint file scope.
+- Boundary calls: a frontend file is not automatically UI/UX. Wiring a hook, fixing a data bug in a component, or typing props is Codex work. Choosing spacing, color, motion, or copy is Fable work.
+
 ## Codex Native Subagents
 
 When running inside Codex and a native multi-agent/subagent tool is available, use it for pstack delegation.
