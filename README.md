@@ -17,7 +17,13 @@ This ports the Cursor pstack workflow into a portable skill suite:
 - `install.sh` installs the full suite into Codex, Claude Code, or both.
 - `scripts/validate.sh` runs the repeatable repo validation: upstream skill parity, skill frontmatter validation, shell parse checks, and install smoke tests.
 
-Install locally. In a human terminal this shows Codex and Claude Code as options with both selected by default:
+Install via [skills.sh](https://www.skills.sh/kashyab12/uni-pstack):
+
+```bash
+npx skills add kashyab12/uni-pstack
+```
+
+Or install locally from a clone. In a human terminal this shows Codex and Claude Code as options with both selected by default:
 
 ```bash
 ./install.sh
