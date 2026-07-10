@@ -1,6 +1,6 @@
 ---
 name: setup-pstack
-description: Configure uni-pstack Codex delegation defaults and host environment for Codex and Claude Code. Use for /setup-pstack, "configure pstack models", "set pstack to gpt 5.5 high fast", or changing pstack's Codex model choices.
+description: Configure uni-pstack Codex delegation defaults and host environment for Codex and Claude Code. Use for /setup-pstack, "configure pstack models", "set pstack reasoning", or changing pstack's Codex model choices.
 ---
 
 # Setup pstack
@@ -9,8 +9,9 @@ Configure host-neutral uni-pstack defaults. Do not write Cursor rule files or re
 
 ## Defaults
 
-- Codex-hosted pstack: use native Codex subagents with `gpt-5.6-sol`, high reasoning, and the supported fast or priority tier.
-- Claude Code-hosted pstack: delegate pstack subagent work to Codex CLI workers with `gpt-5.6-sol`, high reasoning, and `fast` when the local Codex CLI accepts it.
+- Codex-hosted pstack: use native Codex subagents with `gpt-5.6-sol`, task-appropriate reasoning, and the supported fast or priority tier.
+- Claude Code-hosted pstack: delegate pstack subagent work to Codex CLI workers with `gpt-5.6-sol`, task-appropriate reasoning, and `fast` when the local Codex CLI accepts it.
+- Automatic routing uses medium reasoning for routine implementation and exploration. It uses high for judgment, synthesis, high-risk work, or an unknown role.
 - Claude-only fallback policy is host-specific and lives in the installed pstack delegation reference. Do not apply Claude-only model rules inside Codex-hosted runs.
 
 ## Configuration file
@@ -21,13 +22,15 @@ Create the directory if missing and write only assignments the host can honor:
 
 ```bash
 PSTACK_CODEX_MODEL=gpt-5.6-sol
-PSTACK_CODEX_REASONING=high
+PSTACK_CODEX_REASONING=auto
 PSTACK_CODEX_SERVICE_TIER=fast
 ```
 
 Optional Claude-only fallback values belong in the host's Claude configuration, not in Codex-hosted pstack runs. See the installed pstack delegation reference.
 
-If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line or set the closest supported tier. Preserve `gpt-5.6-sol` and high reasoning unless the account does not expose that model.
+Set `PSTACK_CODEX_REASONING` to `medium` or `high` to override routing for every worker. An explicit user choice or `--reasoning` flag wins over `auto`.
+
+If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line or set the closest supported tier. Preserve `gpt-5.6-sol` and the selected reasoning level unless the account does not expose that model.
 
 ## Steps
 
@@ -44,27 +47,29 @@ If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line 
 
 6. Confirm the active defaults in plain language:
 
-- Codex workers: model, reasoning, and service tier.
+- Codex workers: model, automatic reasoning policy or explicit override, and service tier.
 - Claude-only fallback: report only when the host is Claude Code and the user explicitly configured one.
 
 ## Role mapping
 
-Unless a host-specific tool supports per-role model overrides, every pstack role uses the same Codex default:
+Use these defaults when the host supports per-role reasoning. If it does not, use high as the safe fallback. Escalate a medium task to high after a failed attempt or when investigation reveals high blast radius.
 
 ```text
-feature, refactoring: gpt-5.6-sol high
-bug-fix: gpt-5.6-sol high
+feature, refactoring: gpt-5.6-sol medium
+bug-fix: gpt-5.6-sol medium; high when ambiguous or high risk
 perf-issue: gpt-5.6-sol high
 hillclimb: gpt-5.6-sol high
-judgment and prose: gpt-5.6-sol high
-how explorer: gpt-5.6-sol high
-how explainer: gpt-5.6-sol high
+judgment and final synthesis: gpt-5.6-sol high
+how explorer: gpt-5.6-sol medium
+how direct explainer: gpt-5.6-sol medium
+how synthesizer: gpt-5.6-sol high
 how critics: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
-why investigators: gpt-5.6-sol high
+why investigators: gpt-5.6-sol medium
 why synthesizer: gpt-5.6-sol high
 reflect tooling: gpt-5.6-sol high
 reflect judgment, divergent, synthesizer: gpt-5.6-sol high
-arena runners: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
+arena runners: gpt-5.6-sol medium, gpt-5.6-sol medium, gpt-5.6-sol medium
+arena judge: gpt-5.6-sol high
 architect runners: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
 interrogate reviewers: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
 ```

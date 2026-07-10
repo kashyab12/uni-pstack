@@ -33,7 +33,7 @@ Pick one playbook before implementation. Copy its steps into the todo list. A sk
 
 1. Reproduce on the matching surface. If direct repro fails, synthesize the trigger or instrument until the symptom is observable.
 2. Binary-search the cause. Seed hypotheses from a `how` pass and history when useful. Eliminate with runtime evidence.
-3. Plan the fix. If it crosses a function boundary, run Architect. Delegate bounded implementation to a Codex worker with `gpt-5.6-sol`, high reasoning, and fast tier when supported.
+3. Plan the fix. If it crosses a function boundary, run Architect with high reasoning. Delegate a clear, bounded implementation to a Codex worker with `gpt-5.6-sol`, medium reasoning, and fast tier when supported. Use high when the bug is ambiguous or high risk.
 4. Verify on the same surface. The original repro must pass.
 5. Stage history so failing repro or test lands before the fix when practical.
 6. Prepare PR or final response.

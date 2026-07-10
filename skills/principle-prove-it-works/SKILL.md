@@ -9,7 +9,7 @@ description: "Apply after completing a task, before declaring done. Verify again
 This is a portable port of upstream Cursor pstack. Apply these overrides before following the original workflow:
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
-- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol high reasoning plus the supported fast or priority tier for Codex work.
+- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol and task-appropriate reasoning: medium for routine implementation and exploration; high for judgment, synthesis, and high-risk work. Use the supported fast or priority tier.
 - Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.

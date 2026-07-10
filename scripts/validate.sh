@@ -74,6 +74,33 @@ test -f "$benny_tmp/repo/.pstack/benny/"*"-benny-triage.prompt.md"
 rg -q 'Operational file to read and follow:' /tmp/uni-pstack-benny-prompt.md
 rg -q '"source_channel_id":"C123"' /tmp/uni-pstack-benny-prompt.md
 
+echo "== reasoning route smoke =="
+explorer_route="$(PSTACK_CODEX_REASONING=auto "$repo_dir/pstack/scripts/spawn-codex-worker.sh" \
+  --role explorer \
+  --cwd "$benny_tmp/repo" \
+  --output "$benny_tmp/explorer.md" \
+  --dry-run -- "route check" 2>&1)"
+worker_route="$(PSTACK_CODEX_REASONING=auto "$repo_dir/pstack/scripts/spawn-codex-worker.sh" \
+  --role worker \
+  --cwd "$benny_tmp/repo" \
+  --output "$benny_tmp/worker.md" \
+  --dry-run -- "route check" 2>&1)"
+judge_route="$(PSTACK_CODEX_REASONING=auto "$repo_dir/pstack/scripts/spawn-codex-worker.sh" \
+  --role judge \
+  --cwd "$benny_tmp/repo" \
+  --output "$benny_tmp/judge.md" \
+  --dry-run -- "route check" 2>&1)"
+override_route="$(PSTACK_CODEX_REASONING=high "$repo_dir/pstack/scripts/spawn-codex-worker.sh" \
+  --role explorer \
+  --cwd "$benny_tmp/repo" \
+  --output "$benny_tmp/override.md" \
+  --dry-run -- "route check" 2>&1)"
+rg -q 'reasoning=medium' <<<"$explorer_route"
+rg -q 'reasoning=medium' <<<"$worker_route"
+rg -q 'reasoning=high' <<<"$judge_route"
+rg -q 'reasoning=high' <<<"$override_route"
+echo "reasoning routes resolve and explicit overrides win"
+
 echo "== install smoke =="
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp" "$benny_tmp"' EXIT

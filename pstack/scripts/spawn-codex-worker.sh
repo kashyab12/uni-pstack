@@ -4,15 +4,17 @@ set -euo pipefail
 usage() {
   cat <<'USAGE'
 Usage:
-  spawn-codex-worker.sh [--role worker|explorer|judge] [--cwd DIR] [--output FILE]
-                        [--model MODEL] [--reasoning low|medium|high|xhigh]
+  spawn-codex-worker.sh [--role ROLE] [--cwd DIR] [--output FILE]
+                        [--model MODEL] [--reasoning auto|low|medium|high|xhigh]
                         [--service-tier TIER] [--sandbox MODE] [--json]
-                        [--background] [--log FILE] [--pid-file FILE] -- "prompt"
+                        [--background] [--dry-run] [--log FILE] [--pid-file FILE]
+                        -- "prompt"
 
 Reads the prompt from arguments after --, or from stdin when no prompt is provided.
 Defaults are tuned for pstack Claude-to-Codex delegation:
   model:        PSTACK_CODEX_MODEL or gpt-5.6-sol
-  reasoning:    PSTACK_CODEX_REASONING or high
+  reasoning:    PSTACK_CODEX_REASONING or auto
+                auto uses medium for worker/explorer and high for judgment roles
   service tier: PSTACK_CODEX_SERVICE_TIER or fast
 USAGE
 }
@@ -21,11 +23,12 @@ role="worker"
 cwd="$PWD"
 output=""
 model="${PSTACK_CODEX_MODEL:-gpt-5.6-sol}"
-reasoning="${PSTACK_CODEX_REASONING:-high}"
+reasoning="${PSTACK_CODEX_REASONING:-auto}"
 service_tier="${PSTACK_CODEX_SERVICE_TIER:-fast}"
 sandbox="${PSTACK_CODEX_SANDBOX:-}"
 json=0
 background=0
+dry_run=0
 log_file=""
 pid_file=""
 
@@ -67,6 +70,10 @@ while [[ $# -gt 0 ]]; do
       background=1
       shift
       ;;
+    --dry-run)
+      dry_run=1
+      shift
+      ;;
     --log)
       log_file="${2:?missing log file}"
       shift 2
@@ -89,10 +96,27 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if ! command -v codex >/dev/null 2>&1; then
-  echo "codex CLI not found on PATH" >&2
-  exit 127
-fi
+case "$reasoning" in
+  auto)
+    case "$role" in
+      worker|explorer)
+        reasoning="medium"
+        ;;
+      judge|architect|critic|reviewer|synthesizer)
+        reasoning="high"
+        ;;
+      *)
+        reasoning="high"
+        ;;
+    esac
+    ;;
+  low|medium|high|xhigh)
+    ;;
+  *)
+    echo "invalid reasoning level: $reasoning" >&2
+    exit 2
+    ;;
+esac
 
 if [[ $# -gt 0 ]]; then
   prompt="$*"
@@ -161,6 +185,16 @@ fi
 
 printf 'Starting Codex %s with model=%s reasoning=%s service_tier=%s\n' "$role" "$model" "$reasoning" "$service_tier" >&2
 printf 'Output: %s\n' "$output" >&2
+if [[ "$dry_run" -eq 1 ]]; then
+  printf 'Dry run only; Codex was not started.\n' >&2
+  exit 0
+fi
+
+if ! command -v codex >/dev/null 2>&1; then
+  echo "codex CLI not found on PATH" >&2
+  exit 127
+fi
+
 if [[ "$background" -eq 1 ]]; then
   printf 'Log: %s\n' "$log_file" >&2
   printf 'PID file: %s\n' "$pid_file" >&2

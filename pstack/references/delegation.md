@@ -6,7 +6,7 @@ Use delegation to increase independent coverage without losing ownership. The pa
 
 In Claude Code, a Fable-class parent orchestrates and Codex executes by default. Classify each delegable unit of work before spawning; do not ask the user which executor to use.
 
-- Default executor: Codex CLI worker, `gpt-5.6-sol`, high reasoning, fast tier. Applies to backend and application logic, refactors, bug fixes, tests, performance work, data plumbing, scripts, build and infra changes, migrations, and read-only exploration.
+- Default executor: Codex CLI worker, `gpt-5.6-sol`, task-appropriate reasoning, fast tier. Use medium for routine implementation and read-only exploration. Use high for architecture, judgment, synthesis, ambiguous debugging, performance analysis, migrations, security-sensitive work, and other high-risk changes.
 - UI/UX exception: Codex is not the executor. The Fable parent implements it directly, or spawns a Claude-only worker per the Model Policy below. Applies to visual layout, styling and CSS, component and design-system work, animation and interaction feel, information hierarchy, UX flows and microcopy, and anything judged by how it looks or feels on screen.
 - Mixed tasks: split at the boundary. Codex owns the logic slice (state, data, handlers, API); Fable owns the visual slice (markup structure, styling, interaction polish). Give each slice a disjoint file scope.
 - Boundary calls: a frontend file is not automatically UI/UX. Wiring a hook, fixing a data bug in a component, or typing props is Codex work. Choosing spacing, color, motion, or copy is Fable work.
@@ -20,12 +20,12 @@ Default spawn shape for Codex-hosted pstack:
 ```text
 agent_type: worker or explorer
 model: gpt-5.6-sol
-reasoning_effort: high
+reasoning_effort: medium for routine work; high for judgment, synthesis, or high-risk work
 service_tier: fast, if supported by this Codex build
 fork_context: false unless the worker truly needs the full current thread
 ```
 
-Omit `model`, `reasoning_effort`, or `service_tier` when the tool says to inherit from the parent or when the override is not supported. Some Codex native subagent builds expose `priority` rather than `fast` for `gpt-5.6-sol`; use the supported fast/priority tier and say which one was used. If the user explicitly asked for `gpt-5.6-sol high fast reasoning`, preserve `gpt-5.6-sol` and `high`, then use the closest supported service tier.
+Omit `model`, `reasoning_effort`, or `service_tier` when the tool says to inherit from the parent or when the override is not supported. Some Codex native subagent builds expose `priority` rather than `fast` for `gpt-5.6-sol`; use the supported fast/priority tier and say which one was used. An explicit user choice wins. If the host cannot set reasoning per task, use high. Escalate medium to high after a failed attempt or when the task proves broader or riskier than classified.
 
 Use `worker` for bounded implementation. Specify:
 
@@ -44,8 +44,8 @@ Do not wait reflexively. Spawn sidecar tasks, keep working locally, and wait onl
 
 Upstream pstack mentions models such as Composer and Claude Opus. In this port:
 
-- Codex-hosted pstack: use Codex native subagents with `gpt-5.6-sol`, high reasoning, and the supported fast/priority tier.
-- Claude-hosted pstack, Codex delegation: use Codex CLI with `gpt-5.6-sol`, high reasoning, and `service_tier="fast"` when supported.
+- Codex-hosted pstack: use Codex native subagents with `gpt-5.6-sol`, task-appropriate reasoning, and the supported fast/priority tier.
+- Claude-hosted pstack, Codex delegation: use the bundled launcher with `gpt-5.6-sol`, automatic reasoning routing, and `service_tier="fast"` when supported.
 - Claude-hosted pstack, Claude-only workers: use Fable 5 high reasoning, with the exact model slug exposed by the local Claude CLI or host. For UI/UX Claude-only workers, use Fable 5 high for hard design decisions and medium for cheaper visual iteration.
 - Do not apply `fable-5` guidance inside Codex-hosted pstack runs. Codex should not spawn Claude CLI workers by default.
 
@@ -62,13 +62,15 @@ pstack/scripts/spawn-codex-worker.sh \
   "Implement the bounded task here. Own files: src/foo.ts. Verify with npm test -- foo."
 ```
 
+The launcher resolves `worker` and `explorer` to medium. It resolves `judge`, `architect`, `critic`, `reviewer`, and `synthesizer` to high. Pass `--reasoning medium` or `--reasoning high` to override this routing.
+
 Or call Codex directly:
 
 ```bash
 codex exec \
   --cd "$PWD" \
   --model "${PSTACK_CODEX_MODEL:-gpt-5.6-sol}" \
-  -c model_reasoning_effort='"high"' \
+  -c model_reasoning_effort='"medium"' \
   -c service_tier='"fast"' \
   --output-last-message ".pstack/workers/worker-1.md" \
   "Task prompt"

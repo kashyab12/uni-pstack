@@ -9,7 +9,7 @@ description: poteto's agent style for concise, detailed responses, deliberate su
 This is a portable port of upstream Cursor pstack. Apply these overrides before following the original workflow:
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
-- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol high reasoning plus the supported fast or priority tier for Codex work.
+- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol and task-appropriate reasoning: medium for routine implementation and exploration; high for judgment, synthesis, and high-risk work. Use the supported fast or priority tier.
 - Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
@@ -88,7 +88,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 Use a `poteto-agent` subagent only when the host exposes that type. In Codex, prefer native Codex subagents. In Claude Code, prefer Codex CLI workers for pstack delegation. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`) set their own delegation shape for diverse-model review; respect what the skill prescribes.
 
-Defaults for every delegated run: run in background when the host supports it, preserve tool/MCP access when investigators need it, pass file pointers instead of inlining bulky context, and use the configured pstack model defaults from **setup-pstack** (`gpt-5.6-sol` high reasoning for Codex work).
+Defaults for every delegated run: run in background when the host supports it, preserve tool/MCP access when investigators need it, pass file pointers instead of inlining bulky context, and use the configured pstack model defaults from **setup-pstack** (`gpt-5.6-sol` medium reasoning for routine implementation and exploration; high for judgment, synthesis, and high-risk work).
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 

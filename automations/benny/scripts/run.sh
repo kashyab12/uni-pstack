@@ -17,7 +17,7 @@ Options:
   --json                  Ask Codex CLI for JSONL events.
   --sandbox MODE          Pass a Codex sandbox mode.
   --model MODEL           Default: PSTACK_CODEX_MODEL or gpt-5.6-sol.
-  --reasoning LEVEL       Default: PSTACK_CODEX_REASONING or high.
+  --reasoning LEVEL       Default: PSTACK_CODEX_REASONING or auto; auto resolves to high.
   --service-tier TIER     Default: PSTACK_CODEX_SERVICE_TIER or fast.
   -h, --help              Show this help.
 
@@ -97,7 +97,7 @@ background=0
 json=0
 sandbox="${PSTACK_CODEX_SANDBOX:-}"
 model="${PSTACK_CODEX_MODEL:-gpt-5.6-sol}"
-reasoning="${PSTACK_CODEX_REASONING:-high}"
+reasoning="${PSTACK_CODEX_REASONING:-auto}"
 service_tier="${PSTACK_CODEX_SERVICE_TIER:-fast}"
 
 while [[ $# -gt 0 ]]; do
@@ -176,6 +176,17 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+case "$reasoning" in
+  auto)
+    reasoning="high"
+    ;;
+  low|medium|high|xhigh)
+    ;;
+  *)
+    die "invalid reasoning level: $reasoning"
+    ;;
+esac
+
 [[ -n "$repo" ]] || die "missing --repo"
 [[ -d "$repo" ]] || die "repository does not exist: $repo"
 repo="$(cd "$repo" && pwd)"
@@ -246,7 +257,7 @@ Host contract:
 - Preserve immutable source coordinates from the trigger for every Slack read or write.
 - The coordinator is the only external writer. Delegated workers must not receive Slack credentials or use Slack write actions.
 - In Codex, use native Codex subagents when available. In Claude Code, this script already delegates to Codex CLI; do not spawn Claude workers for pstack work.
-- Codex model policy: gpt-5.6-sol, high reasoning, supported fast/priority tier unless the command line overrides it.
+- Codex model policy: gpt-5.6-sol with task-aware reasoning. Use medium for routine workers and explorers, high for judgment, synthesis, and high-risk work. This Benny coordinator uses high unless the command line overrides it.
 - Codex can be silent for more than 10 minutes. Use output files and logs rather than treating silence as failure.
 
 Read the operational file before acting. Then run this workflow:

@@ -19,7 +19,7 @@ Restart Codex, or start a new Codex session, then invoke:
 Use $pstack to fix this bug.
 ```
 
-When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.6-sol` with high reasoning and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.6-sol`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
+When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.6-sol` with medium reasoning for routine work and exploration, high reasoning for judgment and high-risk work, and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.6-sol`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
 
 ## Claude Code
 
@@ -55,11 +55,11 @@ The launcher defaults:
 
 ```text
 PSTACK_CODEX_MODEL=gpt-5.6-sol
-PSTACK_CODEX_REASONING=high
+PSTACK_CODEX_REASONING=auto
 PSTACK_CODEX_SERVICE_TIER=fast
 ```
 
-Override them only if the local Codex account uses a different slug for GPT-5.6 SOL:
+`auto` uses medium for routine workers and explorers, and high for judgment roles. Override it when the task needs a fixed level:
 
 ```bash
 PSTACK_CODEX_MODEL=gpt-5.6-sol PSTACK_CODEX_REASONING=high \

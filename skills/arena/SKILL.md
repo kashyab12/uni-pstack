@@ -9,7 +9,7 @@ description: "Spawn N parallel candidates at the same task, pick a base, graft t
 This is a portable port of upstream Cursor pstack. Apply these overrides before following the original workflow:
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
-- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol high reasoning plus the supported fast or priority tier for Codex work.
+- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol and task-appropriate reasoning: medium for routine implementation and exploration; high for judgment, synthesis, and high-risk work. Use the supported fast or priority tier.
 - Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
@@ -34,7 +34,7 @@ The N candidates will receive the same prompt, so the prompt is the contract. Ge
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. The rubric is the picker's tool in Phase D; candidates only see the task.
-3. Pick the runners. Default runners are your configured arena list (defaults `gpt-5.6-sol high reasoning`, `gpt-5.6-sol high reasoning`, `gpt-5.6-sol high reasoning`). Spawn more when the arena covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
+3. Pick the runners. Default runners are your configured arena list (defaults `gpt-5.6-sol medium reasoning`, `gpt-5.6-sol medium reasoning`, `gpt-5.6-sol medium reasoning`). Spawn more when the arena covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive. The cross-judge uses `gpt-5.6-sol` high reasoning.
 4. Assign output paths. Each candidate writes to its own location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`). N candidates writing to the same path is shared mutable state and fails the the **separate-before-serializing-shared-state** principle skill test.
 
 ## Phase B: Fan out
