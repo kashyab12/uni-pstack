@@ -19,7 +19,7 @@ Restart Codex, or start a new Codex session, then invoke:
 Use $pstack to fix this bug.
 ```
 
-When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.6-sol` with medium reasoning for routine work and exploration, high reasoning for judgment and high-risk work, and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.6-sol`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
+When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.6-sol` with low reasoning for routine work and exploration, medium reasoning for judgment and high-risk work, and the supported fast/priority tier. Never request high or xhigh on `gpt-5.6-sol`; medium is the cap. If the native tool only offers `priority` for `gpt-5.6-sol`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
 
 ## Claude Code
 
@@ -59,10 +59,10 @@ PSTACK_CODEX_REASONING=auto
 PSTACK_CODEX_SERVICE_TIER=fast
 ```
 
-`auto` uses medium for routine workers and explorers, and high for judgment roles. Override it when the task needs a fixed level:
+`auto` uses low for routine workers and explorers, and medium for judgment roles. The launcher clamps `high` and `xhigh` to medium for `gpt-5.6-sol`. Override it when the task needs a fixed level:
 
 ```bash
-PSTACK_CODEX_MODEL=gpt-5.6-sol PSTACK_CODEX_REASONING=high \
+PSTACK_CODEX_MODEL=gpt-5.6-sol PSTACK_CODEX_REASONING=medium \
   ~/.claude/skills/pstack/scripts/spawn-codex-worker.sh -- "Task prompt"
 ```
 

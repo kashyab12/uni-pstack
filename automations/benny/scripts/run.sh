@@ -17,7 +17,8 @@ Options:
   --json                  Ask Codex CLI for JSONL events.
   --sandbox MODE          Pass a Codex sandbox mode.
   --model MODEL           Default: PSTACK_CODEX_MODEL or gpt-5.6-sol.
-  --reasoning LEVEL       Default: PSTACK_CODEX_REASONING or auto; auto resolves to high.
+  --reasoning LEVEL       Default: PSTACK_CODEX_REASONING or auto; auto resolves to medium.
+                          gpt-5.6-sol is capped at medium; high/xhigh are clamped down.
   --service-tier TIER     Default: PSTACK_CODEX_SERVICE_TIER or fast.
   -h, --help              Show this help.
 
@@ -178,12 +179,23 @@ done
 
 case "$reasoning" in
   auto)
-    reasoning="high"
+    reasoning="medium"
     ;;
   low|medium|high|xhigh)
     ;;
   *)
     die "invalid reasoning level: $reasoning"
+    ;;
+esac
+
+case "$model" in
+  gpt-5.6-sol*)
+    case "$reasoning" in
+      high|xhigh)
+        printf 'benny run: gpt-5.6-sol is capped at medium reasoning; clamping %s to medium\n' "$reasoning" >&2
+        reasoning="medium"
+        ;;
+    esac
     ;;
 esac
 
@@ -257,7 +269,7 @@ Host contract:
 - Preserve immutable source coordinates from the trigger for every Slack read or write.
 - The coordinator is the only external writer. Delegated workers must not receive Slack credentials or use Slack write actions.
 - In Codex, use native Codex subagents when available. In Claude Code, this script already delegates to Codex CLI; do not spawn Claude workers for pstack work.
-- Codex model policy: gpt-5.6-sol with task-aware reasoning. Use medium for routine workers and explorers, high for judgment, synthesis, and high-risk work. This Benny coordinator uses high unless the command line overrides it.
+- Codex model policy: gpt-5.6-sol with task-aware reasoning, capped at medium. Use low for routine workers and explorers, medium for judgment, synthesis, and high-risk work. Never request high or xhigh on gpt-5.6-sol. This Benny coordinator uses medium unless the command line overrides it.
 - Codex can be silent for more than 10 minutes. Use output files and logs rather than treating silence as failure.
 
 Read the operational file before acting. Then run this workflow:

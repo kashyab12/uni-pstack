@@ -95,11 +95,12 @@ override_route="$(PSTACK_CODEX_REASONING=high "$repo_dir/pstack/scripts/spawn-co
   --cwd "$benny_tmp/repo" \
   --output "$benny_tmp/override.md" \
   --dry-run -- "route check" 2>&1)"
-rg -q 'reasoning=medium' <<<"$explorer_route"
-rg -q 'reasoning=medium' <<<"$worker_route"
-rg -q 'reasoning=high' <<<"$judge_route"
-rg -q 'reasoning=high' <<<"$override_route"
-echo "reasoning routes resolve and explicit overrides win"
+rg -q 'reasoning=low' <<<"$explorer_route"
+rg -q 'reasoning=low' <<<"$worker_route"
+rg -q 'reasoning=medium' <<<"$judge_route"
+rg -q 'capped at medium' <<<"$override_route"
+rg -q 'reasoning=medium' <<<"$override_route"
+echo "reasoning routes resolve and gpt-5.6-sol clamps high to medium"
 
 echo "== install smoke =="
 tmp="$(mktemp -d)"

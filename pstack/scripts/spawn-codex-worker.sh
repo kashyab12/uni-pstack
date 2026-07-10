@@ -14,7 +14,8 @@ Reads the prompt from arguments after --, or from stdin when no prompt is provid
 Defaults are tuned for pstack Claude-to-Codex delegation:
   model:        PSTACK_CODEX_MODEL or gpt-5.6-sol
   reasoning:    PSTACK_CODEX_REASONING or auto
-                auto uses medium for worker/explorer and high for judgment roles
+                auto uses low for worker/explorer and medium for judgment roles
+                gpt-5.6-sol is capped at medium; high/xhigh are clamped down
   service tier: PSTACK_CODEX_SERVICE_TIER or fast
 USAGE
 }
@@ -100,13 +101,13 @@ case "$reasoning" in
   auto)
     case "$role" in
       worker|explorer)
-        reasoning="medium"
+        reasoning="low"
         ;;
       judge|architect|critic|reviewer|synthesizer)
-        reasoning="high"
+        reasoning="medium"
         ;;
       *)
-        reasoning="high"
+        reasoning="medium"
         ;;
     esac
     ;;
@@ -115,6 +116,17 @@ case "$reasoning" in
   *)
     echo "invalid reasoning level: $reasoning" >&2
     exit 2
+    ;;
+esac
+
+case "$model" in
+  gpt-5.6-sol*)
+    case "$reasoning" in
+      high|xhigh)
+        echo "gpt-5.6-sol is capped at medium reasoning; clamping $reasoning to medium" >&2
+        reasoning="medium"
+        ;;
+    esac
     ;;
 esac
 

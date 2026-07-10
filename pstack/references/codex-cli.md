@@ -16,15 +16,15 @@ If `codex login` cannot open a browser, use the auth modes shown by `codex login
 
 ## Model and reasoning flags
 
-Use medium for routine implementation and exploration:
+Use low for routine implementation and exploration:
 
 ```bash
 --model gpt-5.6-sol \
--c model_reasoning_effort='"medium"' \
+-c model_reasoning_effort='"low"' \
 -c service_tier='"fast"'
 ```
 
-Use high for architecture, judgment, synthesis, ambiguous debugging, performance analysis, migrations, security-sensitive work, and other high-risk changes. An explicit user choice wins. If the local Codex build rejects `service_tier="fast"`, drop that config or use the closest supported tier.
+Use medium for architecture, judgment, synthesis, ambiguous debugging, performance analysis, migrations, security-sensitive work, and other high-risk changes. Never set `high` or `xhigh` on `gpt-5.6-sol`; medium is the cap even when the user asks for more depth. If the local Codex build rejects `service_tier="fast"`, drop that config or use the closest supported tier.
 
 ## Foreground Read-Only Investigation
 
@@ -33,14 +33,14 @@ codex exec \
   --cd "$PWD" \
   --sandbox read-only \
   --model gpt-5.6-sol \
-  -c model_reasoning_effort='"medium"' \
+  -c model_reasoning_effort='"low"' \
   -c service_tier='"fast"' \
   --output-last-message ".pstack/workers/save-flow.md" \
   --json \
   "Map the Save click path end to end. Return files inspected, the state machine, likely no-op paths, and the next reproduction check."
 ```
 
-Use `--sandbox read-only` for explorers. Reviews still use high reasoning because they make judgment calls. Use `--json` when you want progress events in logs. Use `--output-last-message` for the final answer.
+Use `--sandbox read-only` for explorers. Reviews use medium reasoning — the `gpt-5.6-sol` cap — because they make judgment calls. Use `--json` when you want progress events in logs. Use `--output-last-message` for the final answer.
 
 ## Foreground Write Worker
 
@@ -49,7 +49,7 @@ codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
   --model gpt-5.6-sol \
-  -c model_reasoning_effort='"medium"' \
+  -c model_reasoning_effort='"low"' \
   -c service_tier='"fast"' \
   --output-last-message ".pstack/workers/save-fix.md" \
   "Fix the confirmed Save no-op bug.
@@ -72,7 +72,7 @@ codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
   --model gpt-5.6-sol \
-  -c model_reasoning_effort='"medium"' \
+  -c model_reasoning_effort='"low"' \
   --output-last-message ".pstack/workers/fix.md" \
   - <<'PROMPT'
 <task>
@@ -104,7 +104,7 @@ nohup codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
   --model gpt-5.6-sol \
-  -c model_reasoning_effort='"medium"' \
+  -c model_reasoning_effort='"low"' \
   -c service_tier='"fast"' \
   --json \
   --output-last-message ".pstack/workers/fix.md" \
@@ -143,7 +143,7 @@ pstack/scripts/spawn-codex-worker.sh \
   "Fix the confirmed Save no-op bug. Verify with pnpm test save-button.spec.ts."
 ```
 
-The launcher defaults to `auto`. Roles `worker` and `explorer` use medium. Roles `judge`, `architect`, `critic`, `reviewer`, and `synthesizer` use high. Pass `--reasoning medium` or `--reasoning high` to override the role default. Use `--dry-run` to inspect the resolved choice without starting Codex.
+The launcher defaults to `auto`. Roles `worker` and `explorer` use low. Roles `judge`, `architect`, `critic`, `reviewer`, and `synthesizer` use medium. Pass `--reasoning low` or `--reasoning medium` to override the role default; the launcher clamps `high` and `xhigh` to medium for `gpt-5.6-sol`. Use `--dry-run` to inspect the resolved choice without starting Codex.
 
 Read result:
 
