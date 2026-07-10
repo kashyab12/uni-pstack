@@ -13,5 +13,5 @@ Portable runtime override:
 
 - In Codex, use native Codex subagents rather than Cursor `Task`.
 - In Claude Code, use Codex CLI workers for pstack delegation unless the user explicitly asks for a Claude-only worker.
-- Use Codex `gpt-5.5` high reasoning plus the supported fast or priority tier for Codex work.
+- Use Codex `gpt-5.6-sol` high reasoning plus the supported fast or priority tier for Codex work.
 - Claude-only fallback model policy lives in the installed pstack delegation reference.

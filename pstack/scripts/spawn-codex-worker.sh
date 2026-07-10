@@ -11,7 +11,7 @@ Usage:
 
 Reads the prompt from arguments after --, or from stdin when no prompt is provided.
 Defaults are tuned for pstack Claude-to-Codex delegation:
-  model:        PSTACK_CODEX_MODEL or gpt-5.5
+  model:        PSTACK_CODEX_MODEL or gpt-5.6-sol
   reasoning:    PSTACK_CODEX_REASONING or high
   service tier: PSTACK_CODEX_SERVICE_TIER or fast
 USAGE
@@ -20,7 +20,7 @@ USAGE
 role="worker"
 cwd="$PWD"
 output=""
-model="${PSTACK_CODEX_MODEL:-gpt-5.5}"
+model="${PSTACK_CODEX_MODEL:-gpt-5.6-sol}"
 reasoning="${PSTACK_CODEX_REASONING:-high}"
 service_tier="${PSTACK_CODEX_SERVICE_TIER:-fast}"
 sandbox="${PSTACK_CODEX_SANDBOX:-}"

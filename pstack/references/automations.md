@@ -62,7 +62,7 @@ The runner owns this data shape:
 - Config: a user-owned Benny YAML file outside the source pack.
 - Pack: the copied or installed `automations/benny/` source.
 - Prompt: rendered from the matching template and saved under `.pstack/benny/`.
-- Execution: `codex exec` with `gpt-5.5`, high reasoning, and supported fast/priority tier unless overridden.
+- Execution: `codex exec` with `gpt-5.6-sol`, high reasoning, and supported fast/priority tier unless overridden.
 - Output: final message, optional JSONL log, optional PID file under `.pstack/benny/`.
 
 Run it as two host workflows:

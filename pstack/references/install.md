@@ -19,7 +19,7 @@ Restart Codex, or start a new Codex session, then invoke:
 Use $pstack to fix this bug.
 ```
 
-When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.5` with high reasoning and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.5`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
+When pstack needs subagents in Codex, it should use native Codex subagents/multi-agent tools first. The default is `gpt-5.6-sol` with high reasoning and the supported fast/priority tier. If the native tool only offers `priority` for `gpt-5.6-sol`, use it and report that fallback. Do not apply Claude-only model rules in Codex.
 
 ## Claude Code
 
@@ -54,15 +54,15 @@ For Claude installations, pstack delegation must launch Codex CLI workers. Use:
 The launcher defaults:
 
 ```text
-PSTACK_CODEX_MODEL=gpt-5.5
+PSTACK_CODEX_MODEL=gpt-5.6-sol
 PSTACK_CODEX_REASONING=high
 PSTACK_CODEX_SERVICE_TIER=fast
 ```
 
-Override them only if the local Codex account uses a different slug for GPT-5.5:
+Override them only if the local Codex account uses a different slug for GPT-5.6 SOL:
 
 ```bash
-PSTACK_CODEX_MODEL=gpt-5.5 PSTACK_CODEX_REASONING=high \
+PSTACK_CODEX_MODEL=gpt-5.6-sol PSTACK_CODEX_REASONING=high \
   ~/.claude/skills/pstack/scripts/spawn-codex-worker.sh -- "Task prompt"
 ```
 

@@ -16,7 +16,7 @@ Options:
   --background            Run Codex in the background.
   --json                  Ask Codex CLI for JSONL events.
   --sandbox MODE          Pass a Codex sandbox mode.
-  --model MODEL           Default: PSTACK_CODEX_MODEL or gpt-5.5.
+  --model MODEL           Default: PSTACK_CODEX_MODEL or gpt-5.6-sol.
   --reasoning LEVEL       Default: PSTACK_CODEX_REASONING or high.
   --service-tier TIER     Default: PSTACK_CODEX_SERVICE_TIER or fast.
   -h, --help              Show this help.
@@ -96,7 +96,7 @@ dry_run=0
 background=0
 json=0
 sandbox="${PSTACK_CODEX_SANDBOX:-}"
-model="${PSTACK_CODEX_MODEL:-gpt-5.5}"
+model="${PSTACK_CODEX_MODEL:-gpt-5.6-sol}"
 reasoning="${PSTACK_CODEX_REASONING:-high}"
 service_tier="${PSTACK_CODEX_SERVICE_TIER:-fast}"
 
@@ -246,7 +246,7 @@ Host contract:
 - Preserve immutable source coordinates from the trigger for every Slack read or write.
 - The coordinator is the only external writer. Delegated workers must not receive Slack credentials or use Slack write actions.
 - In Codex, use native Codex subagents when available. In Claude Code, this script already delegates to Codex CLI; do not spawn Claude workers for pstack work.
-- Codex model policy: gpt-5.5, high reasoning, supported fast/priority tier unless the command line overrides it.
+- Codex model policy: gpt-5.6-sol, high reasoning, supported fast/priority tier unless the command line overrides it.
 - Codex can be silent for more than 10 minutes. Use output files and logs rather than treating silence as failure.
 
 Read the operational file before acting. Then run this workflow:

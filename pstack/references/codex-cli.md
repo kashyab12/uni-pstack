@@ -19,12 +19,12 @@ If `codex login` cannot open a browser, use the auth modes shown by `codex login
 Use this for pstack Codex delegation:
 
 ```bash
---model gpt-5.5 \
+--model gpt-5.6-sol \
 -c model_reasoning_effort='"high"' \
 -c service_tier='"fast"'
 ```
 
-If the local Codex build rejects `service_tier="fast"`, drop that config or use the closest supported tier. Preserve `gpt-5.5` and high reasoning unless the account does not expose that model.
+If the local Codex build rejects `service_tier="fast"`, drop that config or use the closest supported tier. Preserve `gpt-5.6-sol` and high reasoning unless the account does not expose that model.
 
 ## Foreground Read-Only Investigation
 
@@ -32,7 +32,7 @@ If the local Codex build rejects `service_tier="fast"`, drop that config or use 
 codex exec \
   --cd "$PWD" \
   --sandbox read-only \
-  --model gpt-5.5 \
+  --model gpt-5.6-sol \
   -c model_reasoning_effort='"high"' \
   -c service_tier='"fast"' \
   --output-last-message ".pstack/workers/save-flow.md" \
@@ -48,7 +48,7 @@ Use `--sandbox read-only` for explorers and review-like work. Use `--json` when 
 codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
-  --model gpt-5.5 \
+  --model gpt-5.6-sol \
   -c model_reasoning_effort='"high"' \
   -c service_tier='"fast"' \
   --output-last-message ".pstack/workers/save-fix.md" \
@@ -71,7 +71,7 @@ Use a heredoc when the prompt is long:
 codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
-  --model gpt-5.5 \
+  --model gpt-5.6-sol \
   -c model_reasoning_effort='"high"' \
   --output-last-message ".pstack/workers/fix.md" \
   - <<'PROMPT'
@@ -103,7 +103,7 @@ mkdir -p .pstack/workers
 nohup codex exec \
   --cd "$PWD" \
   --sandbox workspace-write \
-  --model gpt-5.5 \
+  --model gpt-5.6-sol \
   -c model_reasoning_effort='"high"' \
   -c service_tier='"fast"' \
   --json \

@@ -9,7 +9,7 @@ description: Spawn three parallel review subagents over the active transcript, s
 This is a portable port of upstream Cursor pstack. Apply these overrides before following the original workflow:
 
 - Cursor Task or subagent calls mean Codex delegation. In Codex, use native Codex subagents. In Claude Code, launch Codex CLI workers using the installed pstack skill spawn-codex-worker script or direct codex exec.
-- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.5 high reasoning plus the supported fast or priority tier for Codex work.
+- Replace upstream Composer, Claude Opus, and other panel defaults with Codex gpt-5.6-sol high reasoning plus the supported fast or priority tier for Codex work.
 - Claude-only fallback model policy lives in the installed pstack delegation reference. Do not infer Claude model choices from this skill.
 - Cursor-only commands such as loop, babysit, deslop, control-ui, and control-cli are conceptual cues. Use the host terminal, browser, review, subagent, and git tools directly.
 - Cursor paths become host-appropriate project or user configuration paths. Preserve the workflow intent, not Cursor-specific storage.
@@ -47,15 +47,15 @@ Launch three reviewers concurrently using pstack's host-native delegation rules.
 
 | Lens | `model` | Prompt template |
 |---|---|---|
-| Judgment | your configured reflect-judgment model (default `gpt-5.5 high reasoning`) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-5.5 high reasoning`) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `gpt-5.5 high reasoning`) | `references/divergent-reviewer.md` |
+| Judgment | your configured reflect-judgment model (default `gpt-5.6-sol high reasoning`) | `references/judgment-reviewer.md` |
+| Tooling | your configured reflect-tooling model (default `gpt-5.6-sol high reasoning`) | `references/tooling-reviewer.md` |
+| Divergent | your configured reflect-judgment model (default `gpt-5.6-sol high reasoning`) | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
 
 ### 3. Synthesize
 
-Launch one synthesizer using your configured reflect-judgment model (default `gpt-5.5 high reasoning`). Give it tool/MCP access when citation spot-checking requires it. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Launch one synthesizer using your configured reflect-judgment model (default `gpt-5.6-sol high reasoning`). Give it tool/MCP access when citation spot-checking requires it. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

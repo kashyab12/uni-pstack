@@ -9,8 +9,8 @@ Configure host-neutral uni-pstack defaults. Do not write Cursor rule files or re
 
 ## Defaults
 
-- Codex-hosted pstack: use native Codex subagents with `gpt-5.5`, high reasoning, and the supported fast or priority tier.
-- Claude Code-hosted pstack: delegate pstack subagent work to Codex CLI workers with `gpt-5.5`, high reasoning, and `fast` when the local Codex CLI accepts it.
+- Codex-hosted pstack: use native Codex subagents with `gpt-5.6-sol`, high reasoning, and the supported fast or priority tier.
+- Claude Code-hosted pstack: delegate pstack subagent work to Codex CLI workers with `gpt-5.6-sol`, high reasoning, and `fast` when the local Codex CLI accepts it.
 - Claude-only fallback policy is host-specific and lives in the installed pstack delegation reference. Do not apply Claude-only model rules inside Codex-hosted runs.
 
 ## Configuration file
@@ -20,14 +20,14 @@ Use `${XDG_CONFIG_HOME:-$HOME/.config}/uni-pstack/models.env` as the portable ov
 Create the directory if missing and write only assignments the host can honor:
 
 ```bash
-PSTACK_CODEX_MODEL=gpt-5.5
+PSTACK_CODEX_MODEL=gpt-5.6-sol
 PSTACK_CODEX_REASONING=high
 PSTACK_CODEX_SERVICE_TIER=fast
 ```
 
 Optional Claude-only fallback values belong in the host's Claude configuration, not in Codex-hosted pstack runs. See the installed pstack delegation reference.
 
-If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line or set the closest supported tier. Preserve `gpt-5.5` and high reasoning unless the account does not expose that model.
+If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line or set the closest supported tier. Preserve `gpt-5.6-sol` and high reasoning unless the account does not expose that model.
 
 ## Steps
 
@@ -52,21 +52,21 @@ If a local Codex CLI rejects `PSTACK_CODEX_SERVICE_TIER=fast`, remove that line 
 Unless a host-specific tool supports per-role model overrides, every pstack role uses the same Codex default:
 
 ```text
-feature, refactoring: gpt-5.5 high
-bug-fix: gpt-5.5 high
-perf-issue: gpt-5.5 high
-hillclimb: gpt-5.5 high
-judgment and prose: gpt-5.5 high
-how explorer: gpt-5.5 high
-how explainer: gpt-5.5 high
-how critics: gpt-5.5 high, gpt-5.5 high, gpt-5.5 high
-why investigators: gpt-5.5 high
-why synthesizer: gpt-5.5 high
-reflect tooling: gpt-5.5 high
-reflect judgment, divergent, synthesizer: gpt-5.5 high
-arena runners: gpt-5.5 high, gpt-5.5 high, gpt-5.5 high
-architect runners: gpt-5.5 high, gpt-5.5 high, gpt-5.5 high
-interrogate reviewers: gpt-5.5 high, gpt-5.5 high, gpt-5.5 high
+feature, refactoring: gpt-5.6-sol high
+bug-fix: gpt-5.6-sol high
+perf-issue: gpt-5.6-sol high
+hillclimb: gpt-5.6-sol high
+judgment and prose: gpt-5.6-sol high
+how explorer: gpt-5.6-sol high
+how explainer: gpt-5.6-sol high
+how critics: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
+why investigators: gpt-5.6-sol high
+why synthesizer: gpt-5.6-sol high
+reflect tooling: gpt-5.6-sol high
+reflect judgment, divergent, synthesizer: gpt-5.6-sol high
+arena runners: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
+architect runners: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
+interrogate reviewers: gpt-5.6-sol high, gpt-5.6-sol high, gpt-5.6-sol high
 ```
 
 Do not create `.cursor/rules/pstack-models.mdc`. That was upstream Cursor behavior and is not portable.

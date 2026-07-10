@@ -37,7 +37,7 @@ test -f "$repo_dir/pstack/references/automations.md"
 test -f "$repo_dir/.cursor-plugin/plugin.json"
 
 echo "== stale model/frontmatter scan =="
-if rg -n 'claude-opus|composer-2\.5|gpt-5\.5-high-fast|^disable-model-invocation:|^user-invocable:' \
+if rg -n 'claude-opus|composer-2\.5|(?i:gpt-5\.5)|gpt-5\.6-sol-high-fast|^disable-model-invocation:|^user-invocable:' \
   "$repo_dir/README.md" "$repo_dir/install.sh" "$repo_dir/pstack" "$repo_dir/skills" "$repo_dir/agents"; then
   fail "stale model names or non-portable installed-skill frontmatter found"
 fi

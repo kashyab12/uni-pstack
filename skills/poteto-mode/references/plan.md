@@ -25,7 +25,7 @@ Resolve what is in scope vs explicitly out, technical or platform constraints, p
 Delegate codebase exploration (the **guard-the-context-window** principle skill).
 
 - Prefer the host's poteto-flavored subagent if one exists. In Codex, use native Codex subagents. In Claude Code, use Codex CLI workers for pstack delegation.
-- Pass model defaults explicitly when the host supports it: `gpt-5.5` high reasoning for Codex code and judgment work.
+- Pass model defaults explicitly when the host supports it: `gpt-5.6-sol` high reasoning for Codex code and judgment work.
 
 Each explorer returns file pointers, conventions, dependencies, test infrastructure, and entry points. No inlined dumps.
 
